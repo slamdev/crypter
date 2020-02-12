@@ -3,8 +3,8 @@ before:
   hooks:
     - go mod download
 builds:
-  - main: "./cmd/crypter/main.go"
-    binary: crypter
+  - main: "./cmd/{{ .ProjectName }}/main.go"
+    binary: {{ .ProjectName }}
     env:
       - CGO_ENABLED=0
     goos:
@@ -14,15 +14,17 @@ builds:
     goarch:
       - amd64
 archives:
-  - name_template: "crypter_{{ .Os }}"
+  - name_template: "{{ .ProjectName }}_{{ .Os }}"
     format: binary
-    files:
-      - none*
+    checksum:
+      name_template: 'checksums.txt'
+    snapshot:
+      name_template: "{{ .Tag }}-next"
 dockers:
   - image_templates:
-      - "slamdev/crypter:latest"
-      - "slamdev/crypter:{{ .Tag }}"
+      - "slamdev/{{ .ProjectName }}:latest"
+      - "slamdev/{{ .ProjectName }}:{{ .Tag }}"
 checksum:
-  name_template: "crypter_checksums.txt"
+  name_template: "checksums.txt"
 changelog:
   skip: false
