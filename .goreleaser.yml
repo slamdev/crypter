@@ -1,0 +1,28 @@
+dist: bin
+before:
+  hooks:
+    - go mod download
+builds:
+  - main: "./cmd/crypter/main.go"
+    binary: crypter
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+archives:
+  - name_template: "crypter_{{ .Os }}"
+    format: binary
+    files:
+      - none*
+dockers:
+  - image_templates:
+      - "slamdev/crypter:latest"
+      - "slamdev/crypter:{{ .Tag }}"
+checksum:
+  name_template: "crypter_checksums.txt"
+changelog:
+  skip: false
