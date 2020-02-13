@@ -17,7 +17,6 @@ jobs:
         uses: actions/setup-go@v1
         with:
           go-version: 1.13
-        id: go
       - name: Checkout
         uses: actions/checkout@v1
       - name: Get dependencies
@@ -26,4 +25,5 @@ jobs:
         run: make build
       - name: Validate release
         uses: goreleaser/goreleaser-action@master
-        run: make snapshot-release
+        with:
+          args: release --snapshot --skip-publish --rm-dist
