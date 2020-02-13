@@ -18,6 +18,8 @@ jobs:
         uses: actions/checkout@v1
       - name: Unshallow
         run: git fetch --prune --unshallow
+      - name: Docker Login
+        run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u slamdev --password-stdin
       - name: Release
         uses: goreleaser/goreleaser-action@v1
         with:
