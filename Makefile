@@ -5,7 +5,7 @@ run:
 	./bin/crypter encrypt -k /tmp/public.key -v some-text
 	./bin/crypter decrypt -k /tmp/private.key -v "$$(cat /tmp/test.yaml)"
 
-mod:
+deps:
 	go mod verify
 	go mod tidy -v
 
@@ -20,8 +20,20 @@ untag:
 	git push origin :refs/tags/$(TAG)
 	curl --request DELETE --header "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/slamdev/crypter/releases/:release_id/$(TAG)"
 
-release:
-ifeq ($(shell which /tmp/goreleaser),)
-	curl -sL https://git.io/goreleaser | TMPDIR=/tmp bash -s -- -v
+verify-goreleaser:
+ifeq (, $(shell which goreleaser))
+	$(error "No goreleaser in $(PATH), consider installing it from https://goreleaser.com/install")
 endif
-	/tmp/goreleaser --rm-dist
+	goreleaser --version
+
+verify-docker:
+ifeq (, $(shell which docker))
+	$(error "No docker in $(PATH), consider installing it from https://docs.docker.com/install")
+endif
+	docker --version
+
+release: verify-goreleaser verify-docker
+	goreleaser release --rm-dist
+
+snapshot-release: verify-goreleaser
+	goreleaser --snapshot --skip-publish --rm-dist

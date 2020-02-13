@@ -3,8 +3,8 @@ before:
   hooks:
     - go mod download
 builds:
-  - main: "./cmd/{{ .ProjectName }}/main.go"
-    binary: {{ .ProjectName }}
+  - main: "./cmd/crypter/main.go"
+    binary: "{{ .ProjectName }}"
     env:
       - CGO_ENABLED=0
     goos:
@@ -16,10 +16,8 @@ builds:
 archives:
   - name_template: "{{ .ProjectName }}_{{ .Os }}"
     format: binary
-    checksum:
-      name_template: 'checksums.txt'
-    snapshot:
-      name_template: "{{ .Tag }}-next"
+snapshot:
+  name_template: "{{ .Tag }}-next"
 dockers:
   - image_templates:
       - "slamdev/{{ .ProjectName }}:latest"
